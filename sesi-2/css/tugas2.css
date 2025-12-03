@@ -1,0 +1,188 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #ffccae 0%, #6e43c6 100%);
+    min-height: 100vh;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.1);
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.navbar .brand {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #43c6ac;
+}
+.navbar .menu {
+    font-size: 1rem;
+    color: #333;
+}
+.navbar .menu span {
+    margin: 0 8px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.navbar .menu span:hover {
+    color: #43c6ac;
+}
+
+.header-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.1);
+    padding: 32px;
+    margin-bottom: 32px;
+    align-items: center;
+}
+.header-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.header-text h2 {
+    margin-top: 0;
+    color: #43c6ac;
+}
+.header-text button {
+    margin-top: 24px;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, #43c6ac 0%, #f8ffae 100%);
+    border: none;
+    border-radius: 8px;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.1);
+    transition: background 0.2s;
+}
+.header-text button:hover {
+    background: linear-gradient(90deg, #f8ffae 0%, #43c6ac 100%);
+}
+.header-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-image img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(67,198,172,0.2);
+}
+
+.biodata-section {
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.1);
+    padding: 32px;
+    margin-bottom: 32px;
+}
+.biodata-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.biodata-header h2 {
+    color: #43c6ac;
+    margin-bottom: 8px;
+}
+.biodata-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+.biodata-item {
+    background: linear-gradient(135deg, #43c6ac 0%, #f8ffae 100%);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.08);
+}
+
+.portfolio-section {
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.1);
+    padding: 32px;
+}
+.portfolio-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.portfolio-header h2 {
+    color: #43c6ac;
+    margin-bottom: 8px;
+}
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+.portfolio-item {
+    background: linear-gradient(135deg, #43c6ac 0%, #f8ffae 100%);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(67,198,172,0.08);
+}
+.portfolio-image {
+    width: 100%;
+    max-width: 350px;
+    height: 150px;
+    background: #e0e0e0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    color: #888;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .header-section {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px;
+    }
+    .biodata-grid, .portfolio-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 8px;
+    }
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 8px;
+    }
+    .header-section {
+        padding: 16px;
+    }
+    .biodata-section, .portfolio-section {
+        padding: 16px;
+    }
+    .biodata-grid, .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
