@@ -1,0 +1,42 @@
+/* Menggunakan font Inter */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f7f7f9; /* Warna latar belakang lembut */
+}
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border-radius: 0.75rem; /* Sudut membulat */
+    overflow: hidden;
+    border: none;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.product-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+.sidebar {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.filter-title {
+    color: #4f46e5;
+    font-weight: 700;
+    border-bottom: 2px solid #eef2ff;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+.btn-primary-custom {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+.btn-primary-custom:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
