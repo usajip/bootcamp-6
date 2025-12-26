@@ -11,17 +11,36 @@ class HomeController extends Controller
         $name = "<b>John Doe</b>";
 
         $products = [
-            'Product 1',
-            'Product 2',
-            'Product 3',
-            'Product 4',
+            [
+                'id' => 1,
+                'name' => 'Product 1',
+                'description' => 'Description for Product 1',
+                'price' => 29.99,
+                'image' =>'/images/products/Mengapa-Website-Dianggap-Sebagai-Alat-Bisnis-yang-Sangat-Powerful.jpg',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Product 2',
+                'description' => 'Description for Product 2',
+                'price' => 49.99,
+                'image' =>'/images/products/product2.jpg',
+            ],
+            [
+                'id' => 3,
+                'name' => 'Product 3',
+                'description' => 'Description for Product 3',
+                'price' => 19.99,
+                'image' =>'/images/products/product3.jpg',
+            ],
         ];
 
-        return view('home');
+        $is_logged_in = false;
+
+        return view('home', compact('name', 'products', 'is_logged_in'));
     }
 
     public function productDetail($id)
     {
-        return "Product Detail for Product ID: " . $id;
+        return view('product-detail', compact('id'));
     }
 }

@@ -14,17 +14,19 @@ Route::get('/2', [HomeController::class, 'index2']);
 
 Route::resource('contoh', ContohResourceController::class);
 
-Route::get('/products/{id}', [HomeController::class, 'productDetail']);
+Route::get('/products/{id}', [HomeController::class, 'productDetail'])->name('product-detail');
 
-Route::get('/cart', function () {
-    return "This is the Cart Page";
-    // return view('welcome');
-});
+Route::get('cart', function () {
+    return view('cart');
+})->name('cart');
 
 Route::get('/checkout', function () {
-    return "This is the Checkout Page";
-    // return view('welcome');
-});
+    return view('checkout');
+})->name('checkout');
+
+Route::get('/transaction-status', function () {
+    return view('transaction-status');
+})->name('transaction-status');
 
 Route::get('/contact', function () {
     return "This is the Contact Page";
