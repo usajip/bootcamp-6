@@ -74,7 +74,7 @@
                                     <td class="py-2 px-4 border-b">{{ $category->total_stock ?? 0 }}</td>
                                     <td class="py-2 px-4 border-b">Rp {{ number_format($category->total_price * $category->total_stock ?? 0, 0, ',', '.') }}</td>
                                     <td class="py-2 px-4 border-b">
-                                        <button type="button" onclick="openEditModal({{ $category->id }}, '{{ addslashes($category->name) }}', '{{ addslashes($category->description) }}')" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded mr-2">Edit</button>
+                                        <button type="button" onclick="openEditModal({{ $category->id }})" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded mr-2">Edit</button>
 
                                         <!-- Edit Modal -->
                                         <div id="editCategoryModal-{{ $category->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -83,16 +83,16 @@
                                                     <h4 class="text-lg font-bold">Edit Kategori Produk</h4>
                                                     <button type="button" onclick="closeEditModal({{ $category->id }})" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
                                                 </div>
-                                                <form id="editCategoryForm-{{ $category->id }}" action="{{ route('product-categories.update', $category->id) }}" method="POST" class="px-6 py-4">
+                                                <form action="{{ route('product-categories.update', $category->id) }}" method="POST" class="px-6 py-4">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="mb-4">
                                                         <label class="block text-gray-700 font-bold mb-2" for="edit-name-{{ $category->id }}">Nama</label>
-                                                        <input type="text" name="name" id="edit-name-{{ $category->id }}" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
+                                                        <input type="text" name="name" id="edit-name-{{ $category->id }}" value="{{ $category->name }}" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
                                                     </div>
                                                     <div class="mb-4">
                                                         <label class="block text-gray-700 font-bold mb-2" for="edit-description-{{ $category->id }}">Deskripsi</label>
-                                                        <textarea name="description" id="edit-description-{{ $category->id }}" rows="3" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"></textarea>
+                                                        <textarea name="description" id="edit-description-{{ $category->id }}" rows="3" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">{{ $category->description }}</textarea>
                                                     </div>
                                                     <div class="flex justify-end">
                                                         <button type="button" onclick="closeEditModal({{ $category->id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">Batal</button>
@@ -104,10 +104,8 @@
 
                                         @push('scripts')
                                         <script>
-                                            function openEditModal(id, name, description) {
+                                            function openEditModal(id) {
                                                 document.getElementById('editCategoryModal-' + id).classList.remove('hidden');
-                                                document.getElementById('edit-name-' + id).value = name;
-                                                document.getElementById('edit-description-' + id).value = description;
                                             }
                                             function closeEditModal(id) {
                                                 document.getElementById('editCategoryModal-' + id).classList.add('hidden');
