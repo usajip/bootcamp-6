@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -11,9 +12,7 @@ Route::get('/', function () {
 
 
 Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', function () {
-        return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
     
     Route::resource('products', ProductController::class);
     Route::resource('product-categories', ProductCategoryController::class);
