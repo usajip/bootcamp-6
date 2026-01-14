@@ -15,7 +15,7 @@
                             + Tambah Produk
                         </a>
                     </div>
-                    <table class="w-full bg-white border" id="myTable">
+                    <table class="w-full bg-white border">
                         <thead>
                             <tr>
                                 <th class="py-2 px-4 border-b">ID</th>
@@ -25,6 +25,7 @@
                                 <th class="py-2 px-4 border-b">Stok</th>
                                 <th class="py-2 px-4 border-b">Gambar</th>
                                 <th class="py-2 px-4 border-b">Kategori</th>
+                                <th class="py-2 px-4 border-b">Total trx</th>
                                 <th class="py-2 px-4 border-b">Aksi</th>
                             </tr>
                         </thead>
@@ -44,6 +45,7 @@
                                         @endif
                                     </td>
                                     <td class="py-2 px-4 border-b">{{ $product->product_category->name ?? 'Uncategorized' }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $product->transaction_items_count }}</td>
                                     <td class="py-2 px-4 border-b">
                                         <a href="{{ route('products.edit', $product->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded mr-2">Edit</a>
                                         <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline">
@@ -55,11 +57,13 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="py-2 px-4 text-center">Tidak ada kategori ditemukan.</td>
+                                    <td class="py-2 px-4 text-center">Tidak ada produk ditemukan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+
+                    {{ $products->links() }}
                 </div>
             </div>
         </div>

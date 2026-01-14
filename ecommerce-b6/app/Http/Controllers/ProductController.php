@@ -13,7 +13,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('product_category')->get();
+        $products = Product::with([
+                        'product_category',
+                        'transaction_items' => function ($query) {
+                            $query->whereDate('created_at', now());
+                        }
+                    ])
+                    ->withCount('transaction_items')
+                    ->paginate(5);
 
         return view('admin.product.index', compact('products'));
     }
