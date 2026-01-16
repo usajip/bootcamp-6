@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -20,6 +21,7 @@ class ProductController extends Controller
                         }
                     ])
                     ->withCount('transaction_items')
+                    ->orderBy('id', 'desc')
                     ->paginate(5);
 
         return view('admin.product.index', compact('products'));
@@ -39,7 +41,42 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required|string|min:5|max:100|unique:products,name',
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'product_category_id' => 'required|exists:product_categories,id',
+            // 'image' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:1024', // max 1MB
+            'image' => 'required|string', // base64 image string
+        ]);
+
+        $product = new Product();
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->product_category_id = $request->product_category_id;
+        // upload image from base64 string
+        if ($request->image) {
+            $imageData = $request->image;
+            list($type, $imageData) = explode(';', $imageData);
+            list(, $imageData) = explode(',', $imageData);
+            $imageData = base64_decode($imageData);
+            $imageName = 'products/' . uniqid() . '.webp';
+            Storage::disk('assets')->put($imageName, $imageData);
+            $product->image_url = $imageName;
+        }
+        // if ($request->hasFile('image')) {
+        //     $imagePath = $request->file('image')->store('products', 'assets');
+        //     $product->	image_url = $imagePath;
+        // }else{
+        //     return back()->with('errors', ['Gagal mengunggah gambar produk.']);
+        // }
+        $product->save();
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     /**

@@ -9,6 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    <x-success-error-info />
                     <div class="flex justify-between mb-4">
                         <h3 class="text-lg font-bold">Daftar Kategori Produk</h3>
                         <!-- Button trigger modal -->
@@ -27,11 +28,15 @@
                                     @csrf
                                     <div class="mb-4">
                                         <label class="block text-gray-700 font-bold mb-2" for="name">Nama</label>
-                                        <input type="text" name="name" id="name" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
+                                        <input type="text" name="name" id="name" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" 
+                                        value="{{ old('name') }}"
+                                        minlength="5"
+                                        maxlength="100"
+                                        >
                                     </div>
                                     <div class="mb-4">
                                         <label class="block text-gray-700 font-bold mb-2" for="description">Deskripsi</label>
-                                        <textarea name="description" id="description" rows="3" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"></textarea>
+                                        <textarea name="description" id="description" rows="3" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">{{ old('description') }}</textarea>
                                     </div>
                                     <div class="flex justify-end">
                                         <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">Batal</button>
@@ -49,6 +54,14 @@
                             function closeModal() {
                                 document.getElementById('addCategoryModal').classList.add('hidden');
                             }
+                            // Validasi panjang nama kategori
+                            document.getElementById('name').addEventListener('input', function() {
+                                if (this.value.replace(/\s/g, '').length < 5) {
+                                    this.setCustomValidity('Nama kategori harus memiliki minimal 5 karakter (tidak termasuk spasi).');
+                                } else {
+                                    this.setCustomValidity('');
+                                }
+                            });
                         </script>
                         @endpush
                     </div>
@@ -69,7 +82,7 @@
                                 <tr>
                                     <td class="py-2 px-4 border-b">{{ $category->id }}</td>
                                     <td class="py-2 px-4 border-b">{{ $category->name }}</td>
-                                    <td class="py-2 px-4 border-b">{{ $category->description }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $category->description ?? '-' }}</td>
                                     <td class="py-2 px-4 border-b">{{ $category->products_count }}</td>
                                     <td class="py-2 px-4 border-b">{{ $category->total_stock ?? 0 }}</td>
                                     <td class="py-2 px-4 border-b">Rp {{ number_format($category->total_price * $category->total_stock ?? 0, 0, ',', '.') }}</td>

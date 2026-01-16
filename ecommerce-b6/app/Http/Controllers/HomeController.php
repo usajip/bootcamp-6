@@ -9,40 +9,12 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $name = "<b>John Doe</b>";
-
-        // $products = [
-        //     [
-        //         'id' => 1,
-        //         'name' => 'Product 1',
-        //         'description' => 'Description for Product 1',
-        //         'price' => 29.99,
-        //         'image' =>'/images/products/Mengapa-Website-Dianggap-Sebagai-Alat-Bisnis-yang-Sangat-Powerful.jpg',
-        //     ],
-        //     [
-        //         'id' => 2,
-        //         'name' => 'Product 2',
-        //         'description' => 'Description for Product 2',
-        //         'price' => 49.99,
-        //         'image' =>'/images/products/product2.jpg',
-        //     ],
-        //     [
-        //         'id' => 3,
-        //         'name' => 'Product 3',
-        //         'description' => 'Description for Product 3',
-        //         'price' => 19.99,
-        //         'image' =>'/images/products/product3.jpg',
-        //     ],
-        // ];
-
-        $is_logged_in = false;
-
         $products = Product::with('product_category')
                         ->where('stock', '>', 20)
-                        ->orderBy('stock', 'desc')
+                        ->orderBy('created_at', 'desc')
                         ->paginate(6);
 
-        return view('home', compact('name', 'products', 'is_logged_in'));
+        return view('home', compact('products'));
     }
 
     public function productDetail($id)

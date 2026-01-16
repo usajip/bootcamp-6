@@ -1,5 +1,5 @@
 <div class="card">
-  <img src="{{ asset('images/' . $image) }}" class="card-img-top img-fluid" alt="...">
+  <img src="{{ asset('assets/' . $image) }}" class="card-img-top img-fluid" alt="...">
   <div class="card-body">
     <span class="badge rounded-pill text-bg-primary mb-1">{{ $category }}</span>
     <h5 class="card-title">{{ $title }}</h5>

@@ -9,35 +9,46 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                    <x-success-error-info />
+                    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" id="formUpload">
                         @csrf
                         <div class="mb-4">
                             <label for="name" class="block text-gray-700 font-bold mb-2">Nama Produk</label>
-                            <input type="text" name="name" id="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" required>
+                            <input type="text" name="name" id="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" value="{{ old('name') }}" required>
                         </div>
                         <div class="mb-4">
                             <label for="description" class="block text-gray-700 font-bold mb-2">Deskripsi</label>
-                            <textarea name="description" id="description" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" required></textarea>
+                            <textarea name="description" id="description" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" required>{{ old('description') }}</textarea>
                         </div>
                         <div class="mb-4">
                             <label for="price" class="block text-gray-700 font-bold mb-2">Harga</label>
-                            <input type="number" name="price" id="price" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" min="0" required>
+                            <input type="number" name="price" id="price" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" min="0" step="1000" value="{{ old('price') }}" required>
                         </div>
                         <div class="mb-4">
                             <label for="stock" class="block text-gray-700 font-bold mb-2">Stok</label>
-                            <input type="number" name="stock" id="stock" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" min="0" required>
+                            <input type="number" name="stock" id="stock" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" min="0" value="{{ old('stock') }}" required>
                         </div>
-                        <div class="mb-4">
+                        {{-- <div class="mb-4">
                             <label for="image" class="block text-gray-700 font-bold mb-2">Gambar Produk</label>
                             <input type="file" name="image" id="image" accept="image/*" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" required>
-                        </div>
+                            <div class="mt-2">
+                                <img id="image-preview" src="#" alt="Preview Gambar" class="max-h-48 rounded shadow" style="display:none;">
+                            </div>
+                        </div> --}}
+                        <input type="file" id="uploadImage" accept="image/*">
+
+                        <div id="croppieContainer" style="width: 100%; max-width: 600px;"></div>
+
+                        <input type="hidden" name="image" id="imageResult">
                         <div id="image-error" class="text-red-500 text-sm mb-4" style="display:none;"></div>
                         <div class="mb-4">
                             <label for="product_category_id" class="block text-gray-700 font-bold mb-2">Kategori Produk</label>
                             <select name="product_category_id" id="product_category_id" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" required>
                                 <option value="">Pilih Kategori</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('product_category_id') == $category->id ? 'selected' : '' }}
+                                    >{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -50,11 +61,97 @@
             </div>
         </div>
     </div>
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/croppie/croppie.css" />
+<script src="https://unpkg.com/croppie/croppie.js"></script>
+@endpush
 @push('scripts')
 <script>
+let croppie = new Croppie(document.getElementById('croppieContainer'), {
+    viewport: {
+        width: 320,
+        height: 180, // 16:9
+        type: 'rectangle'
+    },
+    boundary: {
+        width: 350,
+        height: 250
+    },
+    enableExif: true
+});
+
+const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+const maxSize = 1024 * 1024; // 1MB
+
+document.getElementById('uploadImage').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Validasi ukuran
+    if (file.size > maxSize) {
+        alert('Ukuran gambar maksimal 1MB');
+        e.target.value = '';
+        return;
+    }
+
+    // Validasi ekstensi
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(extension)) {
+        alert('Format gambar harus JPG, JPEG, PNG, atau WEBP');
+        e.target.value = '';
+        return;
+    }
+
+    // Load ke croppie
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        croppie.bind({
+            url: event.target.result
+        });
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+
+<script>
+document.getElementById('formUpload').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    croppie.result({
+        type: 'base64',
+        size: { width: 1280, height: 720 },
+        format: 'webp',
+        quality: 90
+    }).then(function (base64) {
+
+        // Estimasi ukuran base64
+        const sizeInBytes = (base64.length * 3) / 4;
+        if (sizeInBytes > maxSize) {
+            alert('Hasil gambar melebihi 1MB, kurangi kualitas');
+            return;
+        }
+
+        document.getElementById('imageResult').value = base64;
+        e.target.submit();
+    });
+});
+</script>
+
+
+<script>
+    // Validasi panjang nama kategori
+    document.getElementById('name').addEventListener('input', function() {
+        if (this.value.replace(/\s/g, '').length < 5) {
+            this.setCustomValidity('Nama produk harus memiliki minimal 5 karakter (tidak termasuk spasi).');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
     document.addEventListener('DOMContentLoaded', function() {
         const imageInput = document.getElementById('image');
         const errorDiv = document.getElementById('image-error');
+        const preview = document.getElementById('image-preview');
         imageInput.addEventListener('change', function(e) {
             errorDiv.style.display = 'none';
             errorDiv.textContent = '';
@@ -62,12 +159,14 @@
                 const file = imageInput.files[0];
                 const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
                 const fileExtension = file.name.split('.').pop().toLowerCase();
+                let error = false;
 
                 if (!allowedExtensions.includes(fileExtension)) {
                     e.preventDefault();
                     errorDiv.textContent = 'Ekstensi gambar harus jpg, jpeg, png, gif, atau webp.';
                     errorDiv.style.display = 'block';
                     imageInput.value = '';
+                    error = true;
                     return;
                 }
 
@@ -76,7 +175,23 @@
                     errorDiv.textContent = 'Ukuran gambar maksimal 1MB.';
                     errorDiv.style.display = 'block';
                     imageInput.value = '';
+                    error = true;
                 }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    if (allowedExtensions.includes(fileExtension) && !error) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    } else {
+                        preview.src = '#';
+                        preview.style.display = 'none';
+                    }
+                    console.log('File selected:', file.name);
+                }
+                reader.readAsDataURL(file);
             }
         });
     });
