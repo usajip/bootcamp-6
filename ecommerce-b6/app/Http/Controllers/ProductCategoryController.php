@@ -64,7 +64,20 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|min:5|max:100|unique:product_categories,name,' . $productCategory->id,
+            'description' => 'nullable|string',
+        ]);
+
+        // ProductCategory::where('name', $request->name)->whereNot('id', '!=', $productCategory->id)->exists();
+
+        $productCategory->update($validatedData);
+
+        // $productCategory->name = $request->name;
+        // $productCategory->description = $request->description;
+        // $productCategory->save();
+
+        return back()->with('success', 'Kategori produk dengan id: '.$productCategory->id.' berhasil diperbarui.');
     }
 
     /**
@@ -72,6 +85,12 @@ class ProductCategoryController extends Controller
      */
     public function destroy(ProductCategory $productCategory)
     {
-        //
+        if ($productCategory->products()->exists()) {
+            return back()->withErrors(['Kategori produk: <b>' . $productCategory->name . '</b> tidak dapat dihapus karena masih memiliki produk.']);
+        }
+
+        $productCategory->delete();
+
+        return back()->with('success', 'Kategori produk dengan id: '.$productCategory->id.' berhasil dihapus.');
     }
 }

@@ -52,7 +52,7 @@
                                         <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus kategori ini?')" class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded">Hapus</button>
+                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus produk: {{ $product->name }} ini?')" class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>

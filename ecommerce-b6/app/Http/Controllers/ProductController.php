@@ -101,7 +101,36 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|min:5|max:100|unique:products,name,' . $product->id,
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'product_category_id' => 'required|exists:product_categories,id',
+            'image' => 'nullable|string', // base64 image string
+        ]);
+
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->product_category_id = $request->product_category_id;
+        // upload image from base64 string
+        if ($request->image) {
+            if(Storage::disk('assets')->exists($product->image_url)){
+                Storage::disk('assets')->delete($product->image_url);
+            }
+            $imageData = $request->image;
+            list($type, $imageData) = explode(';', $imageData);
+            list(, $imageData) = explode(',', $imageData);
+            $imageData = base64_decode($imageData);
+            $imageName = 'products/' . uniqid() . '.webp';
+            Storage::disk('assets')->put($imageName, $imageData);
+            $product->image_url = $imageName;
+        }
+        $product->save();
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**
@@ -109,6 +138,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        if ($product->transaction_items()->exists()) {
+            return back()->withErrors(['Produk: <b>' . $product->name . '</b> tidak dapat dihapus karena masih memiliki transaksi.']);
+        }
+
+        if(Storage::disk('assets')->exists($product->image_url)){
+            Storage::disk('assets')->delete($product->image_url);
+        }
+
+        $product->delete();
+
+        return back()->with('success', 'Produk dengan id: '.$product->id.' berhasil dihapus.');
     }
 }
