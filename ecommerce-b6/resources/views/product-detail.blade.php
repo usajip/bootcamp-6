@@ -1,6 +1,18 @@
 <x-template-bootstrap title="Product Detail Page with Component">
     <div class="container my-5">
         <div class="row">
+            <div class="col-12 mb-4">
+                @if(session('success'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+                @endif
+                @if(session('error'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('error') }}
+                </div>
+                @endif
+            </div>
             <div class="col-md-6">
                 <img src="{{ asset('assets/'.$product->image_url) }}" class="img-fluid rounded" alt="Product Image">
             </div>
@@ -9,10 +21,11 @@
                 <p class="text-muted mb-2">Category: <span class="fw-bold">{{ $product->product_category->name }}</span></p>
                 <h4 class="text-primary mb-3">Rp{{ number_format($product->price, 0, ',', '.') }}</h4>
                 <p>{{ $product->description }}</p>
-                <form>
+                <form action="{{ route('cart.add', ['productId' => $product->id]) }}" method="POST" class="mt-4">
+                    @csrf
                     <div class="mb-3">
                         <label for="quantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control w-25" id="quantity" value="1" min="1">
+                        <input type="number" class="form-control w-25" id="quantity" name="quantity" value="1" min="1">
                     </div>
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-cart-plus"></i> Add to Cart

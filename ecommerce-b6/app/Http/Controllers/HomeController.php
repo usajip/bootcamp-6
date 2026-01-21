@@ -16,19 +16,4 @@ class HomeController extends Controller
 
         return view('home', compact('products'));
     }
-
-    public function productDetail($id)
-    {
-        $product = Product::with('product_category')
-                        ->findOrFail($id); // nampilin detail produk berdasarkan id
-
-        $recommendedProducts = Product::where('product_category_id', $product->product_category_id)
-                                    ->where('id', '!=', $product->id)
-                                    ->inRandomOrder()
-                                    ->take(4)
-                                    ->get();// nampilin banyak produk rekomendasi
-        // dd($product, $recommendedProducts);
-
-        return view('product-detail', compact('product', 'recommendedProducts'));
-    }
 }

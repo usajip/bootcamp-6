@@ -82,9 +82,27 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        $product = Product::with('product_category')
+                        ->findOrFail($id); // nampilin detail produk berdasarkan id
+
+        $recommendedProducts = Product::where('product_category_id', $product->product_category_id)
+                                    ->where('id', '!=', $product->id)
+                                    ->inRandomOrder()
+                                    ->take(4)
+                                    ->get();// nampilin banyak produk rekomendasi
+        // add click count to the product data on the database using session to avoid multiple click count from the same user in a short time
+        $session = session();
+        $clickKey = 'product_click_' . $product->id;
+        if (!$session->has($clickKey)) {
+            $session->put($clickKey, true);
+            // add click counter to database
+            $product->click += 1;
+            $product->save();
+        }
+
+        return view('product-detail', compact('product', 'recommendedProducts'));
     }
 
     /**

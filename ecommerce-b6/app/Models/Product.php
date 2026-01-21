@@ -20,6 +20,7 @@ class Product extends Model
         'price',
         'stock',
         'image_url',
+        'click',
         'product_category_id',
     ];
 
