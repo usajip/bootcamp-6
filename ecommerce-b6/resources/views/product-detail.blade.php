@@ -46,6 +46,7 @@
                     :description="$item->description"
                     link="{{ route('product-detail', ['id' => $item->id]) }}"
                     :category="$item->product_category->name"
+                    :price="$item->price"
                 ></x-product-card>
             </div>
             @endforeach

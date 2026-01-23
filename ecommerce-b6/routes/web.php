@@ -46,6 +46,9 @@ Route::get('/contact', function () {
 
 Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+    Route::get('transaction-list', [TransactionController::class, 'index'])->name('transaction-list');
+    Route::post('trasaction-update-status/{transaction_id}', [TransactionController::class, 'updateStatus'])->name('transaction.update-status');
     
     Route::resource('products', ProductController::class);
     Route::resource('product-categories', ProductCategoryController::class);

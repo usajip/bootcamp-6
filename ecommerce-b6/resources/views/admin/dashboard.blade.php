@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-wrap gap-6 w-full">
-                @foreach($data as $item)
+                @foreach($summary as $item)
                 <div class="p-6 bg-white border-b border-gray-200 max-w-[250px] w-full rounded-[12px] shadow-md">
                     <div class="flex justify-between">
                         <div>
@@ -31,7 +31,7 @@
                 {{-- Latest Transactions --}}
                 <div class="flex justify-between gap-2">
                 <h3 class="text-lg font-semibold mb-4">Latest Transactions</h3>
-                <a href="#!" class="text-blue-600 hover:underline mb-4 self-center">View All</a>
+                <a href="{{ route('transaction-list') }}" class="text-blue-600 hover:underline mb-4 self-center">View All</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -42,23 +42,29 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($latestTransactionOnTable as $transaction)
+                            @foreach($transactionList as $transaction)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $transaction['id'] }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $transaction['user'] }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp{{ number_format($transaction['amount'], 0, ',', '.') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($transaction['date'])->format('d M Y H:i') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <a href="{{ route('checkout.success', ['transaction_id' => $transaction->id]) }}"> {{ $transaction->id }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $transaction->user->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp{{ number_format($transaction->total_amount, 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($transaction->created_at)->format('d M Y H:i') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    @if($transaction['status'] === 'completed')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                    @elseif($transaction['status'] === 'pending')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    @if($transaction->status === 'completed')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{ ucfirst($transaction->status) }}</span>
+                                    @elseif($transaction->status === 'pending')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ ucfirst($transaction->status) }}</span>
                                     @else
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">{{ ucfirst($transaction->status) }}</span>
                                     @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('checkout.success', ['transaction_id' => $transaction->id]) }}">View Details</a>
                                 </td>
                             </tr>
                             @endforeach

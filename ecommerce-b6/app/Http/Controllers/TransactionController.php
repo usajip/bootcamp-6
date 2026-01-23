@@ -15,7 +15,10 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactionList = Transaction::with('user')
+                                ->orderBy('created_at', 'desc')
+                                ->paginate(5);
+        return view('admin.transaction_list', compact('transactionList'));
     }
 
     public function checkoutPage()
@@ -117,6 +120,18 @@ class TransactionController extends Controller
     public function edit(Transaction $transaction)
     {
         //
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $request->validate([
+            'status' => 'required|in:pending,completed,cancelled,shipped,paid',
+        ]);
+        $transaction->status = $request->status;
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Transaction status updated successfully.');
     }
 
     /**
